@@ -92,7 +92,7 @@ export const dashboardNav = [
 
 export const footerLinks = {
   product: [
-    { label: "GitHub", href: "https://github.com/Devputta/Dosent---Document-AI-" },
+    { label: "GitHub", href: "https://github.com/Devputta/Doset" },
     { label: "Documentation", href: "/docs" },
   ],
   company: [
