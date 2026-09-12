@@ -15,7 +15,7 @@ export default function AboutPage() {
       description="A context-aware AI document assistant — ask questions of your own PDFs and Markdown files, and get answers you can actually verify."
       after={
         <Button
-          href="https://github.com/Devputta/Dosent---Document-AI-"
+          href="https://github.com/Devputta/Doset"
           target="_blank"
           rel="noopener noreferrer"
           variant="secondary"
