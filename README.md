@@ -1,5 +1,9 @@
 # Docent — Context-Aware AI Document Assistant
 
+**Live demo:** https://doset-frontend.onrender.com/
+
+> Free-tier hosting — the first request after a period of inactivity may take 30–60s to wake up. Note: this build uses ephemeral storage, so uploaded documents and accounts reset periodically.
+
 Upload a PDF or Markdown file. Ask it questions. Get answers grounded only
 in that document, with a citation you can click to jump straight to the
 source page or section.
