@@ -1,0 +1,71 @@
+services:
+  chroma:
+    image: chromadb/chroma:0.5.23
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/api/v1/heartbeat || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      SESSION_SECRET: ${SESSION_SECRET}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      DATA_DIR: /app/data
+      SQLITE_PATH: /app/data/app.db
+      CHROMA_HOST: chroma
+      CHROMA_PORT: 8000
+      MAX_FILE_SIZE_MB: ${MAX_FILE_SIZE_MB:-25}
+      CHUNK_SIZE_TOKENS: ${CHUNK_SIZE_TOKENS:-800}
+      CHUNK_OVERLAP_TOKENS: ${CHUNK_OVERLAP_TOKENS:-120}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-openai}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    volumes:
+      - backend_data:/app/data
+    depends_on:
+      chroma:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./doc-assistant
+      args:
+        NEXT_PUBLIC_MAX_FILE_SIZE_MB: ${MAX_FILE_SIZE_MB:-25}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      SESSION_SECRET: ${SESSION_SECRET}
+      API_BASE_URL: http://backend:8000
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+    depends_on:
+      backend:
+        condition: service_healthy
+    volumes:
+      - frontend_data:/app/data
+
+volumes:
+  backend_data:
+  chroma_data:
+  frontend_data:

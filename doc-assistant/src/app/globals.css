@@ -1,0 +1,216 @@
+@import "tailwindcss";
+
+/*
+  Design tokens — Context-Aware AI Document Assistant
+  ----------------------------------------------------
+  Palette is built around the idea of an annotated document:
+  ink-dark surfaces, warm paper-light surfaces, an indigo "ink"
+  accent for interactive/brand elements, and an amber "highlighter"
+  accent reserved for citations and retrieval highlights only.
+*/
+
+:root {
+  --paper: #f7f5f0;
+  --paper-2: #efece3;
+  --paper-3: #e6e2d6;
+  --line: #ddd8ca;
+
+  --ink: #14161f;
+  --ink-2: #1b1e29;
+  --ink-3: #262a38;
+
+  --text-primary: #1c1e27;
+  --text-secondary: #565a6b;
+  --text-muted: #8a8d9c;
+
+  --text-primary-inverse: #f6f4ee;
+  --text-secondary-inverse: #a3a7ba;
+
+  --brand: #33459a;
+  --brand-strong: #232f6d;
+  --brand-soft: #e8eaf6;
+
+  --highlight: #e8ac4d;
+  --highlight-soft: #faedd2;
+
+  --success: #3f7d5c;
+  --danger: #b8493f;
+
+  --background: var(--paper);
+  --foreground: var(--text-primary);
+  --surface: #ffffff;
+  --surface-2: var(--paper-2);
+  --border: var(--line);
+}
+
+.dark {
+  --background: var(--ink);
+  --foreground: var(--text-primary-inverse);
+  --surface: var(--ink-2);
+  --surface-2: var(--ink-3);
+  --border: #2d3140;
+
+  --text-primary: var(--text-primary-inverse);
+  --text-secondary: var(--text-secondary-inverse);
+  --text-muted: #6b7086;
+
+  --brand-soft: #232a4a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+
+  --color-highlight: var(--highlight);
+  --color-highlight-soft: var(--highlight-soft);
+
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+
+  --font-display: var(--font-source-serif);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-plex-mono);
+}
+
+:root {
+  /*
+    System-font stacks standing in for Source Serif 4 / Inter / IBM Plex Mono.
+    Swap these for next/font-loaded variables (or self-hosted @font-face
+    files) whenever the deployment environment has access to Google Fonts —
+    every component already reads from font-display / font-sans / font-mono.
+  */
+  --font-source-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-inter:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-plex-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::selection {
+  background: var(--highlight-soft);
+  color: var(--text-primary);
+}
+
+/* Visible keyboard focus, kept consistent across components */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hairline document-style underline for citation-style marks */
+.mark-highlight {
+  background: linear-gradient(to top, var(--highlight-soft) 45%, transparent 45%);
+}
+
+/* Minimal Markdown-document typography (Day 3 viewer) — hand-rolled instead
+   of pulling in @tailwindcss/typography for one component. */
+.prose-doc {
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.prose-doc h1,
+.prose-doc h2,
+.prose-doc h3,
+.prose-doc h4 {
+  font-family: var(--font-display, inherit);
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-top: 1.75em;
+  margin-bottom: 0.5em;
+}
+.prose-doc h1 { font-size: 1.5em; }
+.prose-doc h2 { font-size: 1.25em; }
+.prose-doc h3 { font-size: 1.1em; }
+.prose-doc p { margin: 0.85em 0; }
+.prose-doc ul,
+.prose-doc ol {
+  margin: 0.85em 0;
+  padding-left: 1.4em;
+}
+.prose-doc ul { list-style: disc; }
+.prose-doc ol { list-style: decimal; }
+.prose-doc li { margin: 0.3em 0; }
+.prose-doc a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
+.prose-doc blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1em;
+  color: var(--text-secondary);
+  margin: 1em 0;
+}
+.prose-doc code {
+  background: var(--surface-2);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-family: var(--font-plex-mono, monospace);
+  font-size: 0.85em;
+}
+.prose-doc pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+.prose-doc pre code { background: none; padding: 0; }
+.prose-doc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.9em;
+}
+.prose-doc th,
+.prose-doc td {
+  border: 1px solid var(--border);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+.prose-doc th { background: var(--surface-2); font-weight: 600; }
+.prose-doc hr { border-color: var(--border); margin: 1.5em 0; }
